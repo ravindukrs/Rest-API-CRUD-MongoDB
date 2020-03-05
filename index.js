@@ -6,6 +6,9 @@ const mongoose = require('mongoose');
 //Set up express
 const app = express();
 
+//Enable Static Content
+app.use(express.static('public'));
+
 //delcare server port
 var port = 3000;
 

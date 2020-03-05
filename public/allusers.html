@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Front End for API</title>
+    <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+    <div>
+        <ul class="navul">
+            <li class="navli"><a href="/index.html">Search by Location</a></li>
+            <li class="navli"><a class="active" href="/allusers.html">All Users</a></li>
+            <li class="navli"><a href="/addusers.html">Add Users</a></li>
+            <li class="navli"><a href="/deleteusers.html">Delete Users</a></li>
+            <li class="navli"><a href="/updateusers.html">Update Users</a></li>
+        </ul>
+    </div>
+    
+    <h1 class="title">User Base - REST API</h1>
+    <div id="homepage">
+        <h1>Find All Users</h1>
+        <div id="users">
+
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://unpkg.com/react@15/dist/react.js"></script>
+    <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+    <!--Create React Component-->
+    <script type="text/babel">
+        var Users = React.createClass({
+            getInitialState: function(){
+                return({
+                    users: []
+                })
+            }, 
+            render:function(){
+                var users = this.state.users;
+                console.log("Render Function");
+                console.log(users);
+                users = users.map(function(user, index){
+                    return(
+                        <li key={index}>
+                        <span className="id">{user.id}</span>
+                        <span className="name">{user.name}</span>
+                        <span className="dist">{Math.floor(user.dist.calculated/1000)} KM</span>
+                         </li>
+                    );
+                    
+                });
+                return(
+                    <div id="user-container">
+                        <form id="search" onSubmit={this.handleSubmit}>
+                            <input type="submit" value="List Users"/>
+                        </form>
+                        <ul>
+                            {users}
+                        </ul>
+                    </div>
+                );
+            },
+            handleSubmit: function(e){
+                e.preventDefault();
+                console.log("List Users Press");
+
+                fetch('/users?lng='+lng+'&lat='+lat).then(function(data){
+                    console.log(data);
+                    return data.json();
+                }).then( json => {
+                    this.setState({
+                        users: json
+                    });
+                    
+                });
+            }
+        });
+
+        ReactDOM.render(<Users/>, document.getElementById('users'));
+    </script>
+</body>
+
+</html>
