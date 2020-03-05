@@ -17,12 +17,18 @@ router.post('/users', function(req,res, next){
 
 //Update a user
 router.put('/users/:id', function(req,res, next){
-    res.send({name: "PUT"});
+    User.findOneAndUpdate({id: req.params.id},req.body, {useFindAndModify: false}).then(function(){
+        User.findOne({id:req.params.id}).then(function(user){
+            res.send(user);
+        }).catch(next);
+    }).catch(next); 
 })
 
 //Delete a user
 router.delete('/users/:id', function(req,res, next){
-    res.send({name: "DELETE"});
+    User.findOneAndDelete({id: req.params.id}, {useFindAndModify: false}).then(function(user){
+        res.send(user);
+    }).catch(next);
 })
 
 module.exports = router;
