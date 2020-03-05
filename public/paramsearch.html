@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Front End for API</title>
+    <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+    <div>
+        <ul class="navul">
+            <li class="navli"><a href="/index.html">Search by Location</a></li>
+            <li class="navli"><a href="/allusers.html">All Users</a></li>
+            <li class="navli"><a class="active" href="/paramsearch.html">Search by ID or Name</a></li>
+            <li class="navli"><a href="/addusers.html">Add Users</a></li>
+            <li class="navli"><a href="/deleteusers.html">Delete Users</a></li>
+            <li class="navli"><a href="/updateusers.html">Update Users</a></li>
+        </ul>
+    </div>
+
+    <h1 class="title">User Base - REST API</h1>
+    <div id="homepage">
+        <h1>Search by ID or Name</h1>
+        <div id="users">
+
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://unpkg.com/react@15/dist/react.js"></script>
+    <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+    <!--Create React Component-->
+    <script type="text/babel">
+        var Users = React.createClass({
+            getInitialState: function () {
+                return ({
+                    users: []
+                })
+            },
+            render: function () {
+                var users = this.state.users;
+                console.log("Render Function");
+                console.log(users);
+                users = users.map(function (user, index) {
+                    return (
+                        <li key={index}>
+                            <span className="id">{user.id}</span>
+                            <span className="name">{user.name}</span>
+                            <span className="dist">{user.geometry.coordinates[0]} Long</span>
+                            <span className="dist">{user.geometry.coordinates[1]} Lat</span>
+                        </li>
+                    );
+
+                });
+                return (
+                    <div id="user-container">
+                        <form id="search" onSubmit={this.handleSubmitById}>
+                            <label>Enter User ID: </label>
+                            <input type="text" ref="id" placeholder="User ID" required />
+                            <input type="submit" value="Find by ID" />
+                        </form>
+                        <form id="search" onSubmit={this.handleSubmitByName}>
+                            <label>Enter User's Name: </label>
+                            <input type="text" ref="name" placeholder="User's Name" required />
+                            <input type="submit" value="Find by Name" />
+                        </form>
+                        <ul>
+                            {users}
+                        </ul>
+                    </div>
+                );
+            },
+            handleSubmitById: function (e) {
+                e.preventDefault();
+                var id = this.refs.id.value;
+                fetch('/users?id=' + id).then(function (data) {
+                    return data.json();
+                }).then(json => {
+                    this.setState({
+                        users: json
+                    });
+                });
+            },
+            handleSubmitByName: function (e) {
+                e.preventDefault();
+                var name = this.refs.name.value;
+                fetch('/users?name=' + name).then(function (data) {
+                    return data.json();
+                }).then(json => {
+                    this.setState({
+                        users: json
+                    });
+                    console.log(json);
+                });
+            }
+        });
+
+        ReactDOM.render(<Users />, document.getElementById('users'));
+    </script>
+</body>
+
+</html>

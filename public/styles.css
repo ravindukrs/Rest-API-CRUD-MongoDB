@@ -20,6 +20,14 @@ input[type="text"]{
     border-radius: 4px;
     border: 1px solid #ddd;
 }
+input[type="number"]{
+    display: block;
+    width: 300px;
+    margin: 20px 0;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
 label{
     font-weight: bold;
 }
@@ -106,7 +114,7 @@ button.false{display: none;}
   
 .navli {
     float: left;
-    width: 20%;
+    width: 16.6%;
     background-color: #333;
     height: 100%;
     margin-top: 0;

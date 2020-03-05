@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Front End for API</title>
+    <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+    <div>
+        <ul class="navul">
+            <li class="navli"><a href="/index.html">Search by Location</a></li>
+            <li class="navli"><a href="/allusers.html">All Users</a></li>
+            <li class="navli"><a href="/paramsearch.html">Search by ID or Name</a></li>
+            <li class="navli"><a href="/addusers.html">Add Users</a></li>
+            <li class="navli"><a href="/deleteusers.html">Delete Users</a></li>
+            <li class="navli"><a class="active" href="/updateusers.html">Update Users</a></li>
+        </ul>
+    </div>
+
+    <h1 class="title">User Base - REST API</h1>
+    <div id="homepage">
+        <h1>Update Existing Users</h1>
+        <h3><i>Note: This doesn't validate existing information such as IDs</i></h3>
+        <div id="users">
+
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://unpkg.com/react@15/dist/react.js"></script>
+    <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+    <!--Create React Component-->
+    <script type="text/babel">
+    var tempArray = [];
+        var Users = React.createClass({
+            
+            getInitialState: function () {
+                return ({
+                    users: []
+                })
+            },
+            render: function () {
+                var users = this.state.users;
+                console.log("Render Function");
+                console.log(users);
+
+                //alert("User Added");
+                users = users.map(function (user, index) {
+                    return (
+                        <li key={index}>
+                            <span className="id">{user.id}</span>
+                            <span className="name">{user.name}</span>
+                        </li>
+                    );
+
+                });
+                return (
+                    <div id="user-container">
+                        <form id="search" onSubmit={this.handleSubmit}>
+                            <label>Enter User ID: </label>
+                            <input type="number" ref="id" placeholder="User ID" required />
+                            <label>Enter Name: </label>
+                            <input type="text" ref="name" placeholder="User's Name" required />
+                            <label>User's Latitude: </label>
+                            <input type="text" ref="lat" placeholder="Latitude" required />
+                            <label>User's Longitude: </label>
+                            <input type="text" ref="lng" placeholder="Longitude" required />
+                            <input type="submit" value="Update User" />
+                        </form>
+                        <ul>
+                            {users}
+                        </ul>
+                    </div>
+                );
+            },
+            handleSubmit: function (e) {
+                e.preventDefault();
+                console.log("Post Press");
+                var id = this.refs.id.value;
+                var name = this.refs.name.value;
+                var lng = this.refs.lng.value;
+                var lat = this.refs.lat.value;
+
+                fetch('/users/'+id, {
+                    method: 'put',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        "name": name,
+                        "geometry": { "type": "point", "coordinates": [parseFloat(lng), parseFloat(lat)] }
+                    })
+                }).then(function (data) {
+                    console.log(data);
+                    return data.json();
+                }).then(json => {
+                    tempArray = [];
+                    tempArray.push(json);
+                    this.setState({
+                        users: tempArray
+                    });
+                    console.log("users state");
+                    console.log(users);
+
+                });
+            }
+        });
+
+        ReactDOM.render(<Users />, document.getElementById('users'));
+    </script>
+</body>
+
+</html>

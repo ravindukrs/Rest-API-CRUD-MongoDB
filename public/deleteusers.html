@@ -13,18 +13,19 @@
 <body>
     <div>
         <ul class="navul">
-            <li class="navli"><a class="active" href="/index.html">Search by Location</a></li>
+            <li class="navli"><a href="/index.html">Search by Location</a></li>
             <li class="navli"><a href="/allusers.html">All Users</a></li>
             <li class="navli"><a href="/paramsearch.html">Search by ID or Name</a></li>
             <li class="navli"><a href="/addusers.html">Add Users</a></li>
-            <li class="navli"><a href="/deleteusers.html">Delete Users</a></li>
+            <li class="navli"><a class="active" href="/deleteusers.html">Delete Users</a></li>
             <li class="navli"><a href="/updateusers.html">Update Users</a></li>
         </ul>
     </div>
-    
+
     <h1 class="title">User Base - REST API</h1>
     <div id="homepage">
-        <h1>Find Users in Your Area</h1>
+        <h1>Delete Users by ID</h1>
+        <h3><i>Note: This doesn't validate existing information such as IDs</i></h3>
         <div id="users">
 
         </div>
@@ -36,33 +37,32 @@
     <!--Create React Component-->
     <script type="text/babel">
         var Users = React.createClass({
-            getInitialState: function(){
-                return({
+            getInitialState: function () {
+                return ({
                     users: []
                 })
-            }, 
-            render:function(){
+            },
+            render: function () {
                 var users = this.state.users;
                 console.log("Render Function");
                 console.log(users);
-                users = users.map(function(user, index){
-                    return(
+
+                //alert("User Added");
+                users = users.map(function (user, index) {
+                    return (
                         <li key={index}>
-                        <span className="id">{user.id}</span>
-                        <span className="name">{user.name}</span>
-                        <span className="dist">{Math.floor(user.dist.calculated/1000)} KM</span>
-                         </li>
+                            <span className="id">{user.id}</span>
+                            <span className="name">{user.name}</span>
+                        </li>
                     );
-                    
+
                 });
-                return(
+                return (
                     <div id="user-container">
                         <form id="search" onSubmit={this.handleSubmit}>
-                            <label>Enter your Latitude: </label>
-                            <input type="text" ref="lat" placeholder="Latitude" required/>
-                            <label>Enter your Longitude: </label>
-                            <input type="text" ref="lng" placeholder="Longitude" required/>
-                            <input type="submit" value="Find Users"/>
+                            <label>Enter User ID: </label>
+                            <input type="number" ref="id" placeholder="User ID" required />
+                            <input type="submit" value="Delete User" />
                         </form>
                         <ul>
                             {users}
@@ -70,26 +70,31 @@
                     </div>
                 );
             },
-            handleSubmit: function(e){
+            handleSubmit: function (e) {
                 e.preventDefault();
-                console.log("Button Press");
-                var lng = this.refs.lng.value;
-                var lat = this.refs.lat.value;
-                console.log(lat+" "+lng);
+                console.log("Post Press");
+                var id = this.refs.id.value;
+               
 
-                fetch('/users?lng='+lng+'&lat='+lat).then(function(data){
+                fetch('/users/'+id, {
+                    method: 'delete'
+                }).then(function (data) {
                     console.log(data);
                     return data.json();
-                }).then( json => {
+                }).then(json => {
+                    var tempArray = [];
+                    tempArray.push(json);
                     this.setState({
-                        users: json
+                        users: tempArray
                     });
-                    
+                    console.log("users state");
+                    console.log(users);
+
                 });
             }
         });
 
-        ReactDOM.render(<Users/>, document.getElementById('users'));
+        ReactDOM.render(<Users />, document.getElementById('users'));
     </script>
 </body>
 

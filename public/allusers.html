@@ -15,6 +15,7 @@
         <ul class="navul">
             <li class="navli"><a href="/index.html">Search by Location</a></li>
             <li class="navli"><a class="active" href="/allusers.html">All Users</a></li>
+            <li class="navli"><a href="/paramsearch.html">Search by ID or Name</a></li>
             <li class="navli"><a href="/addusers.html">Add Users</a></li>
             <li class="navli"><a href="/deleteusers.html">Delete Users</a></li>
             <li class="navli"><a href="/updateusers.html">Update Users</a></li>
@@ -49,7 +50,8 @@
                         <li key={index}>
                         <span className="id">{user.id}</span>
                         <span className="name">{user.name}</span>
-                        <span className="dist">{Math.floor(user.dist.calculated/1000)} KM</span>
+                        <span className="dist">{user.geometry.coordinates[0]} Long</span>
+                        <span className="dist">{user.geometry.coordinates[1]} Lat</span>
                          </li>
                     );
                     
@@ -69,14 +71,14 @@
                 e.preventDefault();
                 console.log("List Users Press");
 
-                fetch('/users?lng='+lng+'&lat='+lat).then(function(data){
+                fetch('/users').then(function(data){
                     console.log(data);
                     return data.json();
                 }).then( json => {
                     this.setState({
                         users: json
                     });
-                    
+                    console.log(json);
                 });
             }
         });
