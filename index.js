@@ -13,7 +13,13 @@ app.use(express.static('public'));
 var port = 3000;
 
 //Connect to Database
-mongoose.connect('mongodb://localhost/testuser',{ useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb://db:27017/testuser',{ useNewUrlParser: true, useUnifiedTopology: true},function(err){
+    if(err){
+        console.log("Conn Error");
+    }else{
+        console.log("Conn Successful");
+    }
+});
 
 //Set mongoose promise to Global promise since 
 //mongoose promise is depricated
